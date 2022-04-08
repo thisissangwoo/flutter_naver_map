@@ -14,6 +14,7 @@ class NaverMapBuilder : NaverMapOptionSink {
     private val options = NaverMapOptions()
     private var locationTrackingMode = 0
     private var paddingData: List<Double>? = null
+    private var initialMarkerImages: List<Any?>? = null
     private var initialMarkers: List<Any?>? = null
     private var initialPaths: List<Any?>? = null
     private var initialCircles: List<Any?>? = null
@@ -30,6 +31,7 @@ class NaverMapBuilder : NaverMapOptionSink {
             binaryMessenger,
             activity!!,
             options,
+            initialMarkerImages!!,
             initialMarkers!!,
             initialPaths!!,
             initialCircles!!,
@@ -163,6 +165,10 @@ class NaverMapBuilder : NaverMapOptionSink {
 
     fun setViewType(useSurface: Boolean) {
         options.useTextureView(!useSurface)
+    }
+
+    fun setInitialMarkerImages(initialMarkerImages: List<Any?>?) {
+        this.initialMarkerImages = initialMarkerImages
     }
 
     fun setInitialMarkers(initialMarkers: List<Any?>?) {

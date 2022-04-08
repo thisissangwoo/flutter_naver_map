@@ -31,6 +31,9 @@ class NaverMapFactory(
                 carveMapOptions(builder, options)
             }
         }
+        if (params.containsKey("markerImages")) {
+            builder.setInitialMarkerImages(params["markerImages"] as List<Any?>?)
+        }
         if (params.containsKey("markers")) {
             builder.setInitialMarkers(params["markers"] as List<Any?>?)
         }

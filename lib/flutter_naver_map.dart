@@ -2,6 +2,7 @@ library flutter_naver_map;
 
 import 'dart:async';
 import 'dart:io' show Platform;
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,10 @@ part 'src/circle_update.dart';
 part 'src/controller.dart';
 
 part 'src/location.dart';
+
+part 'src/marker_image.dart';
+
+part 'src/marker_image_updates.dart';
 
 part 'src/marker.dart';
 

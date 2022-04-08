@@ -39,6 +39,7 @@ class NaverMapController(
     binaryMessenger: BinaryMessenger?,
     private val activity: Activity,
     options: NaverMapOptions?,
+    private val initialMarkerImages: List<Any?>,
     private val initialMarkers: List<Any?>,
     private val initialPaths: List<Any?>,
     private val initialCircles: List<Any?>,
@@ -111,6 +112,8 @@ class NaverMapController(
         markerController =
             NaverMarkerController(naverMap, listeners, density, mapView.context)
         markerController.add(initialMarkers)
+        markerController.addImages(initialMarkerImages)
+        markerController.refreshImages()
 
         // - 원형 오버레이
         circleController = NaverCircleController(naverMap, listeners, density)
@@ -251,6 +254,18 @@ class NaverMapController(
                     Log.e("getMeterPerDp", "네이버맵이 초기화되지 않았습니다.")
                     result.success(null)
                 }
+            }
+            "markerImages#update" -> {
+                val markerImagesToAdd = methodCall.argument<List<Any?>>("markerImagesToAdd")
+                val markerImagesToChange = methodCall.argument<List<Any?>>("markerImagesToChange")
+                val markerImageIdsToRemove = methodCall.argument<List<Any?>>("markerImageIdsToRemove")
+                markerController.run {
+                    addImages(markerImagesToAdd)
+                    modifyImages(markerImagesToChange)
+                    removeImages(markerImageIdsToRemove)
+                    refreshImages()
+                }
+                result.success(null)
             }
             "markers#update" -> {
                 val markersToAdd = methodCall.argument<List<Any?>>("markersToAdd")

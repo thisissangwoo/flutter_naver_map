@@ -111,6 +111,14 @@ class NaverMapController {
     );
   }
 
+  Future<void> _updateMarkerImages(
+      _MarkerImageUpdates markerImageUpdate) async {
+    await _channel.invokeMethod(
+      'markerImages#update',
+      markerImageUpdate._toMap(),
+    );
+  }
+
   Future<void> _updateMarkers(_MarkerUpdates markerUpdate) async {
     await _channel.invokeMethod<void>(
       'markers#update',

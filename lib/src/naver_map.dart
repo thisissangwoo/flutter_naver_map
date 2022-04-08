@@ -1,4 +1,3 @@
-
 part of flutter_naver_map;
 
 /// ### 네이버지도
@@ -33,6 +32,7 @@ class NaverMap extends StatefulWidget {
     this.useSurface = false,
     this.initLocationTrackingMode = LocationTrackingMode.NoFollow,
     this.contentPadding,
+    this.markerImages = const [],
     this.markers = const [],
     this.circles = const [],
     this.polygons = const [],
@@ -168,6 +168,8 @@ class NaverMap extends StatefulWidget {
   /// <p>기본값은 [false]이다. [true]일 경우, 현재는 Crash가 발생합니다.</p>
   final bool logoClickEnabled;
 
+  final List<MarkerImage> markerImages;
+
   /// 지도에 표시될 마커의 리스트입니다.
   final List<Marker> markers;
 
@@ -243,6 +245,7 @@ class _NaverMapState extends State<NaverMap> {
   Completer<NaverMapController> _controller = Completer<NaverMapController>();
   late _NaverMapOptions _naverMapOptions;
 
+  Map<int, MarkerImage> _markerImages = <int, MarkerImage>{};
   Map<String, Marker> _markers = <String, Marker>{};
   Map<String, CircleOverlay> _circles = <String, CircleOverlay>{};
   Map<PathOverlayId, PathOverlay> _paths = <PathOverlayId, PathOverlay>{};
@@ -252,6 +255,7 @@ class _NaverMapState extends State<NaverMap> {
   void initState() {
     super.initState();
     _naverMapOptions = _NaverMapOptions.fromWidget(widget);
+    _markerImages = _keyByMarkerImageId(widget.markerImages);
     _markers = _keyByMarkerId(widget.markers);
     _paths = _keyByPathOverlayId(widget.pathOverlays);
     _circles = _keyByCircleId(widget.circles);
@@ -260,7 +264,7 @@ class _NaverMapState extends State<NaverMap> {
 
   @override
   void dispose() {
-    if(Platform.isIOS) _controller.future.then((c) => c.clearMapView());
+    if (Platform.isIOS) _controller.future.then((c) => c.clearMapView());
     super.dispose();
   }
 
@@ -282,6 +286,7 @@ class _NaverMapState extends State<NaverMap> {
     final Map<String, dynamic> createParams = <String, dynamic>{
       'initialCameraPosition': widget.initialCameraPosition?.toMap(),
       'options': _naverMapOptions.toMap(),
+      'markerImages': _serializeMarkerImageSet(widget.markerImages) ?? [],
       'markers': _serializeMarkerSet(widget.markers) ?? [],
       'paths': _serializePathOverlaySet(widget.pathOverlays) ?? [],
       'circles': _serializeCircleSet(widget.circles) ?? [],
@@ -289,7 +294,8 @@ class _NaverMapState extends State<NaverMap> {
     };
 
     if (defaultTargetPlatform == TargetPlatform.android) {
-      AndroidView view = AndroidView( // virtual screen
+      AndroidView view = AndroidView(
+        // virtual screen
         viewType: VIEW_TYPE,
         onPlatformViewCreated: onPlatformViewCreated,
         creationParams: createParams,
@@ -336,6 +342,7 @@ class _NaverMapState extends State<NaverMap> {
   void didUpdateWidget(NaverMap oldWidget) {
     super.didUpdateWidget(oldWidget);
     _updateOptions();
+    _updateMarkerImages();
     _updateMarkers();
     _updatePathOverlay();
     _updateCircleOverlay();
@@ -349,6 +356,15 @@ class _NaverMapState extends State<NaverMap> {
     final NaverMapController controller = await _controller.future;
     controller._updateMapOptions(updates);
     _naverMapOptions = newOption;
+  }
+
+  void _updateMarkerImages() async {
+    final NaverMapController controller = await _controller.future;
+    controller._updateMarkerImages(_MarkerImageUpdates.from(
+      _markerImages.values.toSet(),
+      widget.markerImages.toSet(),
+    ));
+    _markerImages = _keyByMarkerImageId(widget.markerImages);
   }
 
   void _updateMarkers() async {

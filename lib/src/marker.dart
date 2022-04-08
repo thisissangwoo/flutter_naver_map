@@ -133,6 +133,8 @@ class Marker {
   /// 시계 방향으로 회전합니다
   double? angle;
 
+  int? imageId;
+
   /// 아이콘을 지정합니다.
   OverlayImage? icon;
 
@@ -177,6 +179,7 @@ class Marker {
       this.alpha,
       this.flat,
       this.onMarkerTab,
+      this.imageId,
       this.icon,
       this.captionText,
       this.captionTextSize,
@@ -237,6 +240,7 @@ class Marker {
     addIfPresent('subCaptionColor', subCaptionColor?.value);
     addIfPresent('subCaptionHaloColor', subCaptionHaloColor?.value);
     addIfPresent('subCaptionRequestedWidth', subCaptionRequestedWidth);
+    addIfPresent('imageId', imageId);
     addIfPresent('icon', icon?.assetName);
     addIfPresent('infoWindow', infoWindow);
     addIfPresent('anchor', anchor?._json);
@@ -273,6 +277,7 @@ class Marker {
           maxZoom == other.maxZoom &&
           minZoom == other.minZoom &&
           angle == other.angle &&
+          imageId == other.imageId &&
           icon == other.icon &&
           captionPerspectiveEnabled == other.captionPerspectiveEnabled &&
           iconTintColor == other.iconTintColor &&
@@ -306,6 +311,7 @@ class Marker {
       maxZoom.hashCode ^
       minZoom.hashCode ^
       angle.hashCode ^
+      imageId.hashCode ^
       icon.hashCode ^
       captionPerspectiveEnabled.hashCode ^
       iconTintColor.hashCode ^
@@ -343,6 +349,7 @@ class Marker {
         subCaptionText: subCaptionText,
         subCaptionTextSize: subCaptionTextSize,
         zIndex: zIndex,
+        imageId: imageId,
         icon: icon,
         infoWindow: infoWindow,
         anchor: anchor);

@@ -2,6 +2,7 @@ group 'map.naver.plugin.net.lbstech.naver_map_plugin'
 version '1.0'
 
 buildscript {
+    ext.kotlin_version = '1.6.20'
     repositories {
         google()
         jcenter()
@@ -9,6 +10,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -47,8 +49,11 @@ android {
 }
 dependencies {
     implementation "androidx.core:core-ktx:+"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
 }
 repositories {
     mavenCentral()
+}
+android.sourceSets.all {
+    java.srcDir("src/$name/kotlin")
 }

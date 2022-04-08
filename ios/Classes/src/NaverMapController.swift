@@ -84,6 +84,10 @@ class NaverMapController: NSObject, FlutterPlatformView, NaverMapOptionSink, NMF
             if let options = arg["options"] as? NSDictionary {
                 interpretMapOption(option: options, sink: self)
             }
+            if let markerImageData = arg["markers"] as? Array<Any> {
+                markersController?.addImages(jsonArray: markerImageData)
+                markersController?.refreshImages()
+            }
             if let markerData = arg["markers"] as? Array<Any> {
                 markersController?.add(jsonArray: markerData)
             }
@@ -270,6 +274,19 @@ class NaverMapController: NSObject, FlutterPlatformView, NaverMapOptionSink, NMF
             }
             result(nil)
             break
+        case "markerImages#update" :
+            if let arg = call.arguments as? NSDictionary {
+                if let dataToAdd = arg["markerImagesToAdd"] as? [Any] {
+                    markersController?.addImages(jsonArray: dataToAdd)
+                }
+                if let dataToModify = arg["markerImagesToChange"] as? [Any] {
+                    markersController?.updateImages(jsonArray: dataToModify)
+                }
+                if let dataToRemove = arg["markerImageIdsToRemove"] as? [Any] {
+                    markersController?.removeImages(jsonArray: dataToRemove)
+                }
+                markersController?.refreshImages()
+            }
         case "LO#set#position" :
             if let arg = call.arguments as? NSDictionary, let data = arg["position"] {
                 let latLng = toLatLng(json: data)

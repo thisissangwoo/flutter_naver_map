@@ -5,6 +5,7 @@
 //  Created by Maximilian on 2020/08/26.
 //
 
+import UIKit
 import NMapsMap
 import Flutter
 
@@ -12,12 +13,14 @@ class NMarkerController: NSObject {
     let marker: NMFMarker
     let registrar: FlutterPluginRegistrar
     let id: String
+    let imageId: Int
     var infoWindowTitle: String?
     
     init(json: NSDictionary, registrar: FlutterPluginRegistrar) {
         assert(json["markerId"] != nil && json["position"] != nil)
         marker = NMFMarker()
         self.id = json["markerId"] as! String
+        self.imageId = json["imageId"] as? Int ?? -1
         self.registrar = registrar
         
         super.init()
@@ -117,6 +120,7 @@ class NMarkerController: NSObject {
 }
 
 class NaverMarkersController: NSObject {
+    private var idToImage = Dictionary<Int, NMFOverlayImage>()
     private var idToController = Dictionary<String, NMarkerController>()
     let naverMap: NMFNaverMapView
     let registrar: FlutterPluginRegistrar
@@ -168,6 +172,55 @@ class NaverMarkersController: NSObject {
         }
     }
     
+    func addImages(jsonArray: Array<Any>) {
+        jsonArray.forEach { (json) in
+            DispatchQueue.main.async {
+                if let data = json as? NSDictionary,
+                   let id = data["id"] as? Int,
+                   let bytes = data["bytes"] as? [UInt8] {
+                    let imageData = Data(bytes: bytes, count: bytes.count)
+                    if let uiImage = UIImage(data: imageData) {
+                        self.idToImage[id] = NMFOverlayImage(image: uiImage)
+                    }
+                }
+            }
+        }
+    }
+    
+    func removeImages(jsonArray: Array<Any>) {
+        jsonArray.forEach { (json) in
+            DispatchQueue.main.async {
+                if let id = json as? Int {
+                    self.idToImage.removeValue(forKey: id)
+                }
+            }
+        }
+    }
+    
+    func updateImages(jsonArray: Array<Any>) {
+        jsonArray.forEach { (json) in
+            DispatchQueue.main.async {
+                if let data = json as? NSDictionary,
+                   let id = data["id"] as? Int,
+                   let bytes = data["bytes"] as? [UInt8] {
+                    let imageData = Data(bytes: bytes, count: bytes.count)
+                    if let uiImage = UIImage(data: imageData) {
+                        self.idToImage[id] = NMFOverlayImage(image: uiImage)
+                        
+                    }
+                }
+            }
+        }
+    }
+    
+    func refreshImages() {
+        idToController.forEach { (id, controller) in
+            if let image = idToImage[controller.imageId] {
+                controller.marker.iconImage = image
+            }
+        }
+    }
+    
     func toggleInfoWindow(_ marker: NMarkerController) -> Bool{
         if let title = marker.infoWindowTitle {
             if infoWindowMarkerId != nil && infoWindowMarkerId == marker.id {
@@ -182,5 +235,4 @@ class NaverMarkersController: NSObject {
         }
         return true
     }
-    
 }

@@ -1,6 +1,7 @@
 package map.naver.plugin.net.note11.naver_map_plugin
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.os.Handler
 import map.naver.plugin.net.note11.naver_map_plugin.Convert.toLatLng
 import map.naver.plugin.net.note11.naver_map_plugin.Convert.toPoint
@@ -14,6 +15,7 @@ import android.util.DisplayMetrics
 import android.view.WindowManager
 import com.naver.maps.map.overlay.InfoWindow.DefaultTextAdapter
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.OverlayImage
 import java.util.HashMap
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
@@ -22,6 +24,7 @@ class NaverMarkerController(
     private val naverMap: NaverMap, private val onClickListener: Overlay.OnClickListener,
     private val density: Float, private val context: Context
 ) {
+    private val idToImage = HashMap<Int, OverlayImage>()
     private val idToController = HashMap<String?, MarkerController?>()
     private val handler = Handler(Looper.getMainLooper())
     private val infoWindow = InfoWindow()
@@ -67,8 +70,50 @@ class NaverMarkerController(
         }
     }
 
+    fun addImages(jsonArray: List<Any?>?) {
+        if (jsonArray == null || jsonArray.isEmpty()) return
+        for (json in jsonArray) {
+            val data = json as HashMap<String, Any>
+            val id = data["id"] as Int
+            val bytes = (data["bytes"] as? List<Int>)?.map { it.toByte() }?.toByteArray()
+            if (bytes != null) {
+                idToImage[id] = OverlayImage.fromBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.size))
+            }
+        }
+    }
+
+    fun removeImages(jsonArray: List<Any?>?) {
+        if (jsonArray == null || jsonArray.isEmpty()) return
+        for (json in jsonArray) {
+            val id = json as Int
+            idToImage.remove(id)
+        }
+    }
+
+    fun modifyImages(jsonArray: List<Any?>?) {
+        if (jsonArray == null || jsonArray.isEmpty()) return
+        for (json in jsonArray) {
+            val data = json as HashMap<String, Any>
+            val id = data["id"] as Int
+            val bytes = (data["bytes"] as? List<Int>)?.map { it.toByte() }?.toByteArray()
+            if (bytes != null && idToImage.containsKey(id) && idToImage[id] != null) {
+                idToImage[id] = OverlayImage.fromBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.size))
+            }
+        }
+    }
+
+    fun refreshImages() {
+        for (entry in idToController) {
+            val imageId = entry.value?.imageId
+            idToImage[imageId]?.let { image ->
+                entry.value?.marker?.icon = image
+            }
+        }
+    }
+
     inner class MarkerController(jsonArray: HashMap<String, Any>) {
-        val id: String = (jsonArray["markerId"] as String?)!!
+        val id: String = jsonArray["markerId"] as String
+        val imageId: Int = jsonArray["imageId"] as? Int ?: -1
         val marker: Marker = Marker()
         private var infoWindowText: String? = null
 
