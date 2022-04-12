@@ -190,6 +190,7 @@ class NaverMarkerController(
                 (subCaptionRequestedWidth as Int * this@NaverMarkerController.density).roundToInt()
             val icon = json["icon"]
             if (icon != null) marker.icon = toOverlayImage(icon)
+            if (imageId != -1) idToImage[imageId]?.let { marker.icon = it }
             val infoWindow = json["infoWindow"]
             infoWindowText = if (infoWindow != null) infoWindow as String? else null
         }

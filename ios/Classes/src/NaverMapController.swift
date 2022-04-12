@@ -84,7 +84,7 @@ class NaverMapController: NSObject, FlutterPlatformView, NaverMapOptionSink, NMF
             if let options = arg["options"] as? NSDictionary {
                 interpretMapOption(option: options, sink: self)
             }
-            if let markerImageData = arg["markers"] as? Array<Any> {
+            if let markerImageData = arg["markerImages"] as? Array<Any> {
                 markersController?.addImages(jsonArray: markerImageData)
                 markersController?.refreshImages()
             }

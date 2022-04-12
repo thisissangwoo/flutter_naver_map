@@ -117,6 +117,10 @@ class NMarkerController: NSObject {
     func setMap(_ naverMap: NMFNaverMapView?) {
         self.marker.mapView = naverMap?.mapView
     }
+    
+    func setIcon(_ icon: NMFOverlayImage) {
+        self.marker.iconImage = icon
+    }
 }
 
 class NaverMarkersController: NSObject {
@@ -144,6 +148,9 @@ class NaverMarkersController: NSObject {
                     marker.setMap(self.naverMap)
                     marker.marker.touchHandler = self.touchHandler
                     self.idToController[marker.id] = marker
+                    if let byteImage = self.idToImage[marker.imageId] {
+                        marker.setIcon(byteImage)
+                    }
                 }
             }
         }
@@ -166,7 +173,12 @@ class NaverMarkersController: NSObject {
             DispatchQueue.main.async {
                 if let data = json as? NSDictionary {
                     let id = data["markerId"] as! String
-                    self.idToController[id]?.interpret(json: data)
+                    let marker = self.idToController[id]
+                    marker?.interpret(json: data)
+                    if let imageId = marker?.imageId,
+                       let byteImage = self.idToImage[imageId] {
+                        marker?.setIcon(byteImage)
+                    }
                 }
             }
         }
@@ -179,7 +191,7 @@ class NaverMarkersController: NSObject {
                    let id = data["id"] as? Int,
                    let bytes = data["bytes"] as? [UInt8] {
                     let imageData = Data(bytes: bytes, count: bytes.count)
-                    if let uiImage = UIImage(data: imageData) {
+                    if let uiImage = UIImage(data: imageData)?.resize(scale: 0.4) {
                         self.idToImage[id] = NMFOverlayImage(image: uiImage)
                     }
                 }
@@ -204,7 +216,7 @@ class NaverMarkersController: NSObject {
                    let id = data["id"] as? Int,
                    let bytes = data["bytes"] as? [UInt8] {
                     let imageData = Data(bytes: bytes, count: bytes.count)
-                    if let uiImage = UIImage(data: imageData) {
+                    if let uiImage = UIImage(data: imageData)?.resize(scale: 0.4) {
                         self.idToImage[id] = NMFOverlayImage(image: uiImage)
                         
                     }
