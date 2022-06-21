@@ -242,6 +242,7 @@ class Marker {
     addIfPresent('subCaptionRequestedWidth', subCaptionRequestedWidth);
     addIfPresent('imageId', imageId);
     addIfPresent('icon', icon?.assetName);
+    addIfPresent('iconFromPath', icon?.imageFile?.path);
     addIfPresent('infoWindow', infoWindow);
     addIfPresent('anchor', anchor?._json);
 
