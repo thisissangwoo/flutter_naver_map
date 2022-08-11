@@ -6,6 +6,8 @@ typedef void CameraPositionCallback(CameraPosition position);
 
 typedef void OnMarkerTab(Marker? marker, Map<String, int?> iconSize);
 
+typedef void OnInfoWindowTab(Marker? marker);
+
 typedef void OnMapTap(LatLng latLng);
 
 typedef void OnMapLongTap(LatLng latLng);

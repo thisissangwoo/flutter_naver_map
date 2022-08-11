@@ -31,6 +31,8 @@ class Marker {
   /// iconSize 는 'width' 와 'height'의 key값을 가지고 있다.
   OnMarkerTab? onMarkerTab;
 
+  OnInfoWindowTab? onInfoWindowTab;
+
   /// 좌표를 지정합니다.
   /// -
   /// 만약 position이 유효하지 않은(LatLng.isValid()가 false인) 좌표라면
@@ -179,6 +181,7 @@ class Marker {
       this.alpha,
       this.flat,
       this.onMarkerTab,
+      this.onInfoWindowTab,
       this.imageId,
       this.icon,
       this.captionText,
@@ -259,6 +262,7 @@ class Marker {
           alpha == other.alpha &&
           flat == other.flat &&
           onMarkerTab == other.onMarkerTab &&
+          onInfoWindowTab == other.onInfoWindowTab &&
           position == other.position &&
           captionText == other.captionText &&
           captionTextSize == other.captionTextSize &&
@@ -293,6 +297,7 @@ class Marker {
       alpha.hashCode ^
       flat.hashCode ^
       onMarkerTab.hashCode ^
+      onInfoWindowTab.hashCode ^
       position.hashCode ^
       captionText.hashCode ^
       captionTextSize.hashCode ^
@@ -344,6 +349,7 @@ class Marker {
         maxZoom: maxZoom,
         minZoom: minZoom,
         onMarkerTab: onMarkerTab,
+        onInfoWindowTab: onInfoWindowTab,
         subCaptionColor: subCaptionColor,
         subCaptionHaloColor: subCaptionHaloColor,
         subCaptionRequestedWidth: subCaptionRequestedWidth,
@@ -360,7 +366,8 @@ class Marker {
   String toString() {
     return 'Marker{markerId: $markerId, alpha: $alpha, '
         'flat: $flat, position: $position, zIndex: $zIndex, '
-        'onMarkerTab: $onMarkerTab, infowindow : $infoWindow}';
+        'onMarkerTab: $onMarkerTab, onInfoWindowTab: $onInfoWindowTab, '
+        'infowindow : $infoWindow}';
   }
 }
 

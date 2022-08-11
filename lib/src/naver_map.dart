@@ -426,6 +426,12 @@ class _NaverMapState extends State<NaverMap> {
     }
   }
 
+  void _infoWindowTapped(String markerId) {
+    if (_markers[markerId]?.onInfoWindowTab != null) {
+      _markers[markerId]!.onInfoWindowTab!(_markers[markerId]);
+    }
+  }
+
   void _pathOverlayTapped(String pathId) {
     PathOverlayId pathOverlayId = PathOverlayId(pathId);
     if (_paths[pathOverlayId]?.onPathOverlayTab != null) {

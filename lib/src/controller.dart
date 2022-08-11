@@ -43,6 +43,10 @@ class NaverMapController {
         int? iconHeight = call.arguments['iconHeight'] as int?;
         _naverMapState._markerTapped(markerId, iconWidth, iconHeight);
         break;
+      case 'infoWindow#onTap':
+        String markerId = call.arguments['markerId'];
+        _naverMapState._infoWindowTapped(markerId);
+        break;
       case 'path#onTap':
         String pathId = call.arguments['pathId'];
         _naverMapState._pathOverlayTapped(pathId);

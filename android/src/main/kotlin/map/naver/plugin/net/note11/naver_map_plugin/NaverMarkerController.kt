@@ -210,6 +210,8 @@ class NaverMarkerController(
             if (infoWindowText == null) return
             if (markerIdOfInfoWindow != null && markerIdOfInfoWindow == id) {
                 infoWindow.close()
+                infoWindow.tag = null
+                infoWindow.onClickListener = null
                 markerIdOfInfoWindow = null
             } else {
                 infoWindow.adapter = object : DefaultTextAdapter(context) {
@@ -218,6 +220,8 @@ class NaverMarkerController(
                     }
                 }
                 markerIdOfInfoWindow = id
+                infoWindow.tag = id
+                infoWindow.onClickListener = onClickListener
                 infoWindow.open(marker)
             }
         }

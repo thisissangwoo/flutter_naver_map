@@ -242,9 +242,13 @@ class NaverMarkersController: NSObject {
             if infoWindowMarkerId != nil && infoWindowMarkerId == marker.id {
                 infoWindow.close()
                 infoWindowMarkerId = nil
+                infoWindow.touchHandler = nil
+                infoWindow.userInfo = [:]
             }else {
                 dataSource.title = title
                 infoWindow.dataSource = dataSource
+                infoWindow.touchHandler = self.touchHandler
+                infoWindow.userInfo = ["markerId": marker.id]
                 infoWindow.open(with: marker.marker)
                 infoWindowMarkerId = marker.id
             }

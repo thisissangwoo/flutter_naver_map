@@ -100,6 +100,13 @@ class NaverMapListeners( // member variable
                 channel.invokeMethod("marker#onTap", arguments)
                 return true
             }
+            is InfoWindow -> {
+                val markerId = overlay.getTag() as? String ?: return true
+                val arguments: MutableMap<String, Any> = HashMap(2)
+                arguments["markerId"] = markerId
+                channel.invokeMethod("infoWindow#onTap", arguments)
+                return true
+            }
             is PathOverlay -> {
                 val controller = overlay.getTag() as PathController? ?: return true
                 val arguments: MutableMap<String, Any> = HashMap(2)
