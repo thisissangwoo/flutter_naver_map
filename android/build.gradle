@@ -5,8 +5,8 @@ buildscript {
     ext.kotlin_version = '1.6.20'
     repositories {
         google()
-        // jcenter()
-        mavenCentral()
+        jcenter()
+        // mavenCentral()
     }
 
     dependencies {
@@ -45,9 +45,9 @@ android {
     }
     dependencies {
         // 네이버 지도 SDK
-        implementation 'com.naver.maps:map-sdk:3.16.0'
+        implementation 'com.naver.maps:map-sdk:3.19.0'
         implementation 'com.google.android.gms:play-services-location:18.0.0'
-        implementation "androidx.core:core-ktx:1.7.0" // 버전 명시
+        // implementation "androidx.core:core-ktx:1.7.0" // 버전 명시
     }
 }
 dependencies {
